@@ -82,8 +82,8 @@ LINE_CODING linecoding =
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  4
-#define APP_TX_DATA_SIZE  4
+#define APP_RX_DATA_SIZE  256
+#define APP_TX_DATA_SIZE  256
 /* USER CODE END PRIVATE_DEFINES */
 /**
   * @}
@@ -310,7 +310,7 @@ static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
   /* USER CODE BEGIN 6 */
   USBD_CDC_SetRxBuffer(hUsbDevice_0, &Buf[0]);
   USBD_CDC_ReceivePacket(hUsbDevice_0);
-	HAL_UART_Transmit(&huart2, Buf, *Len, 100);
+	HAL_UART_Transmit_IT(&huart2, Buf, *Len);
   return (USBD_OK);
   /* USER CODE END 6 */ 
 }

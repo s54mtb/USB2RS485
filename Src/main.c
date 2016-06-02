@@ -41,8 +41,8 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-uint8_t aRxBuffer;
-uint8_t aTxBuffer;
+uint8_t aRxBuffer[16];
+uint8_t aTxBuffer[16];
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -70,6 +70,8 @@ int main(void)
   /* USER CODE BEGIN 1 */
   //uint8_t HiMsg[]="hello\r\n";
   /* USER CODE END 1 */
+	
+	int i;
 
   /* MCU Configuration----------------------------------------------------------*/
 
@@ -85,7 +87,7 @@ int main(void)
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN 2 */
-  HAL_Delay(1000);	
+  HAL_Delay(500);	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -95,9 +97,13 @@ int main(void)
   /* USER CODE END WHILE */
 //	CDC_Transmit_FS(HiMsg,strlen(HiMsg));
 //  HAL_Delay(200);	
-		if (HAL_UART_Receive_IT(&huart2, &aRxBuffer, 1) == HAL_OK) 
-			CDC_Transmit_FS(&aRxBuffer,1);
-		
+		if (HAL_UART_Receive_IT(&huart2, aRxBuffer, 1) == HAL_OK) 
+		//if (HAL_UART_Receive(&huart2, &aRxBuffer, 1, 1) == HAL_OK) 
+		{
+			for (i = 0; i<huart2.RxXferSize; i++)	aTxBuffer[i] = aRxBuffer[i];
+			//HAL_Delay(1);
+			CDC_Transmit_FS(aTxBuffer,huart2.RxXferSize);
+		}
 		
 		
   /* USER CODE BEGIN 3 */
